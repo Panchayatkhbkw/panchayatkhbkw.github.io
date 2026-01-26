@@ -451,21 +451,24 @@
                 वीडियों देखर Setup करें
             </button>
         </header>
-
-        <!-- Video Modal Overlay -->
-        <div class="modal-overlay" id="videoModal">
-            <div class="modal-container">
-                <button class="modal-close" id="closeVideo">&times;</button>
-                <div class="video-wrapper">
-                    <video id="videoPlayer" controls playsinline>
-                        <source
-                            src="https://www.youtube.com/embed/PJvQlfrSUmw?autoplay=1"
-                            type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                </div>
-            </div>
+<div>        <!-- Video Modal Overlay --></div>
+<div class="modal-overlay" id="videoModal">
+    <div class="modal-container">
+        <button class="modal-close" id="closeVideo">&times;</button>
+        <div class="video-wrapper">
+            <!-- This is the correct way to embed a YouTube video -->
+            <iframe
+                id="videoPlayer"
+                width="100%"
+                height="100%"
+                src="https://www.youtube.com/embed/PJvQlfrSUmw?autoplay=1"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen
+            ></iframe>
         </div>
+    </div>
+</div>
 
         <!-- ===============================
              STEP 1
@@ -1457,3 +1460,4 @@
 
 
 </html>
+
