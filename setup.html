@@ -1,0 +1,1458 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- ===============================
+         BASIC META CONFIG
+    ================================ -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>App Setup Guide – Step by Step</title>
+
+    <!-- ===============================
+         STYLES (NO EXTERNAL DEPENDENCY)
+    ================================ -->
+    <style>
+        /* ===== Global Reset ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family:
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Roboto,
+                Ubuntu,
+                sans-serif;
+            background: #0f172a;
+            /* slate-900 */
+            color: #e5e7eb;
+            /* gray-200 */
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        /* ===== Page Container ===== */
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 32px 16px;
+            /* Reduced side padding for mobile */
+            position: relative;
+        }
+
+        /* ===== Central Line (Mobile: Far Left) ===== */
+        .container::before {
+            content: "";
+            position: absolute;
+            left: 20px;
+            /* Closer to edge */
+            top: 140px;
+            bottom: 60px;
+            width: 3px;
+            background: #334155;
+            transform: translateX(-50%);
+            border-radius: 99px;
+        }
+
+        /* ===== Header ===== */
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+            z-index: 2;
+        }
+
+        header h1 {
+            font-size: 2rem;
+            /* Smaller on mobile */
+            margin-bottom: 12px;
+            background: linear-gradient(to right, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+
+        header p {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            padding: 0 16px;
+        }
+
+        /* ===== Step Wrapper ===== */
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-left: 42px;
+            /* Just clear of the line */
+            margin-bottom: 50px;
+            /* Reduced vertical space */
+            position: relative;
+        }
+
+        /* ===== Center Dot ===== */
+        .step::after {
+            content: "";
+            width: 14px;
+            height: 14px;
+            background: #3b82f6;
+            border: 3px solid #0f172a;
+            /* Thinner border match bg */
+            border-radius: 50%;
+            position: absolute;
+            /* Calculate position relative to container line */
+            left: -29px;
+            /* 42px margin - 20px line pos - half width approx */
+            /* Actually: line is at absolute 20px. Step starts at 42px. 
+               Difference is 22px. 
+               We want dot at -22px from step left edge to center on line. */
+            left: -22px;
+            top: 28px;
+            /* Align with Step Number */
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            box-shadow: 0 0 0 2px #2563eb40;
+        }
+
+        /* ===== Step Content ===== */
+        .step-content {
+            width: 100%;
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid #334155;
+            box-shadow:
+                0 4px 6px -1px rgba(0, 0, 0, 0.1),
+                0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            position: relative;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .step-number {
+            background: #2563eb;
+            color: white;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+        }
+
+        .step-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #f1f5f9;
+            line-height: 1.25;
+        }
+
+        .step-description {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+            margin-top: 6px;
+        }
+
+        /* ===== Image Wrapper ===== */
+        .step-image {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            /* Center image on mobile too for aesthetics? Or left? User said mobile first. */
+            /* Let's align left slightly but ensure fit */
+            justify-content: flex-start;
+            margin-top: 20px;
+        }
+
+        /* ===== Realistic Phone Frame ===== */
+        .phone-frame {
+            position: relative;
+            display: inline-block;
+            border-radius: 36px;
+            border: 10px solid #111827;
+            /* Dark bezel */
+            box-shadow:
+                0 0 0 2px #374151,
+                /* Outer thin bezel ring */
+                0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            /* Deep shadow */
+            background: #000;
+            overflow: hidden;
+            /* Clip image to radius */
+            max-width: 280px;
+            /* Good width for mobile view screenshots */
+            width: 100%;
+        }
+
+        /* Camera Notch */
+        .phone-frame::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 24px;
+            background: #111827;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+            z-index: 5;
+        }
+
+        .phone-frame img {
+            display: block;
+            width: 100%;
+            height: auto;
+            border-radius: 24px;
+            /* Inner radius matching bezel */
+        }
+
+        /* =========================================
+           DESKTOP/TABLET STYLES (Min-Width: 900px)
+           Zigzag Layout
+        ========================================= */
+        @media (min-width: 900px) {
+            .container {
+                padding: 60px 24px;
+            }
+
+            header h1 {
+                font-size: 3rem;
+            }
+
+            /* Move Line to Center */
+            .container::before {
+                left: 50%;
+                width: 4px;
+            }
+
+            /* Step Layout */
+            .step {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                margin-left: 0;
+                margin-bottom: 120px;
+            }
+
+            /* Center Dot Position */
+            .step::after {
+                left: 50%;
+                top: 50%;
+                width: 20px;
+                height: 20px;
+                border-width: 4px;
+            }
+
+            .step-content {
+                width: 45%;
+                padding: 40px;
+            }
+
+            .step-title {
+                font-size: 1.5rem;
+            }
+
+            .step-description {
+                font-size: 1.1rem;
+            }
+
+            .step-image {
+                width: 45%;
+                justify-content: center;
+                margin-top: 0;
+            }
+
+            .phone-frame {
+                max-width: 320px;
+                /* Larger on desktop */
+                border-width: 12px;
+            }
+
+            /* Zigzag Logic */
+            .step:nth-of-type(odd) {
+                flex-direction: row-reverse;
+            }
+
+            .step:nth-of-type(even) {
+                flex-direction: row;
+            }
+
+            /* Desktop Arrows */
+            .step-content::before,
+            .step-content::after {
+                content: "";
+                position: absolute;
+                top: 50%;
+                width: 0;
+                height: 0;
+                border-style: solid;
+                transform: translateY(-50%);
+            }
+
+            /* Odd Arrows */
+            .step:nth-of-type(odd) .step-content::before {
+                left: -12px;
+                border-width: 12px 12px 12px 0;
+                border-color: transparent #334155 transparent transparent;
+            }
+
+            .step:nth-of-type(odd) .step-content::after {
+                left: -10px;
+                border-width: 11px 11px 11px 0;
+                border-color: transparent #1e293b transparent transparent;
+            }
+
+            /* Even Arrows */
+            .step:nth-of-type(even) .step-content::before {
+                right: -12px;
+                border-width: 12px 0 12px 12px;
+                border-color: transparent transparent transparent #334155;
+            }
+
+            .step:nth-of-type(even) .step-content::after {
+                right: -10px;
+                border-width: 11px 0 11px 11px;
+                border-color: transparent transparent transparent #1e293b;
+            }
+        }
+
+        /* ===== Video Button ===== */
+        .video-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: #fff;
+            text-decoration: none;
+            font-weight: 700;
+            border-radius: 99px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+            font-size: 1rem;
+        }
+
+        .video-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+            filter: brightness(1.1);
+        }
+
+        .video-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        /* ===== Modal Styles ===== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            backdrop-filter: blur(8px);
+        }
+
+        .modal-container {
+            width: auto;
+            max-width: 90%;
+            max-height: 90vh;
+            position: relative;
+            background: #000;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border: 1px solid #334155;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .video-wrapper {
+            width: 100%;
+            height: 90vh;
+            /* Set to 90% of screen height */
+            aspect-ratio: 9/16;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .video-wrapper video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            color: #fff;
+            background: rgba(0, 0, 0, 0.5);
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            transition: background 0.2s;
+        }
+
+        .modal-close:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        @media (min-width: 900px) {
+            .video-wrapper {
+                height: 80vh;
+                /* Slightly smaller on desktop for breathability */
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- ===============================
+             PAGE HEADER
+        ================================ -->
+        <header>
+            <h1>App Setup Guide</h1>
+            <p>हर Step को ध्यान से देखकर Setup करें</p>
+            <button class="video-btn" id="openVideo">
+                <svg viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z" />
+                </svg>
+                वीडियों देखर Setup करें
+            </button>
+        </header>
+
+        <!-- Video Modal Overlay -->
+        <div class="modal-overlay" id="videoModal">
+            <div class="modal-container">
+                <button class="modal-close" id="closeVideo">&times;</button>
+                <div class="video-wrapper">
+                    <video id="videoPlayer" controls playsinline>
+                        <source
+                            src="https://res.cloudinary.com/dno1kyevc/video/upload/v1769336208/monityx/recordings/video/rec_camera_2965058c7e.mp4"
+                            type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===============================
+             STEP 1
+        ================================ -->
+        <section class="step">
+            <div class="step-content">
+                <div class="step-header">
+                    <div class="step-number">Step 1</div>
+                    <div class="step-title">App को डाउनलोड करने के बाद</div>
+                </div>
+
+                <p class="step-description">डाउनलोड करने के बाद App को खोलें</p>
+            </div>
+
+            <div class="step-image">
+                <div class="phone-frame">
+                    <img src="images/Screenshot_20260125_181159_One UI Home.jpg" alt="Step 1 Screenshot" />
+                </div>
+            </div>
+        </section>
+
+        <!-- ===============================
+             STEP 2
+        ================================ -->
+        <section class="step">
+            <div class="step-content">
+                <div class="step-header">
+                    <div class="step-number">Step 2</div>
+                    <div class="step-title">Install पर क्लिक करें</div>
+                </div>
+
+                <p class="step-description">कुछ समय प्रतिक्षा करें जब तक App Install हो जाए</p>
+            </div>
+
+            <div class="step-image">
+                <div class="phone-frame">
+                    <img src="images/Screenshot_20260125_181208_Package installer.jpg" alt="Step 2 Screenshot" />
+                </div>
+            </div>
+        </section>
+
+        <!-- ===============================
+             STEP 3
+        ================================ -->
+        <section class="step">
+            <div class="step-content">
+                <div class="step-header">
+                    <div class="step-number">Step 3</div>
+                    <div class="step-title">Open पर क्लिक करें</div>
+                </div>
+
+                <p class="step-description">App Open हो जाएगा</p>
+            </div>
+
+            <div class="step-image">
+                <div class="phone-frame">
+                    <img src="images/Screenshot_20260125_181228_Package installer.jpg" alt="Step 3 Screenshot" />
+                </div>
+            </div>
+        </section>
+
+        <!-- ===============================
+             STEP 4
+        ================================ -->
+        <section class="step">
+            <div class="step-content">
+                <div class="step-header">
+                    <div class="step-number">Step 4</div>
+                    <div class="step-title">पहले बटन पर क्लिक करें</div>
+                </div>
+
+                <p class="step-description">Play Store पर जाएगा</p>
+            </div>
+
+            <div class="step-image">
+                <div class="phone-frame">
+                    <img src="images/Screenshot_20260125_181235.jpg" alt="Step 4 Screenshot" />
+                </div>
+            </div>
+        </section>
+
+        <!-- ===============================
+             STEP 5
+        ================================ -->
+        <section class="step">
+            <div class="step-content">
+                <div class="step-header">
+                    <div class="step-number"> Step 5</div>
+                    <div class="step-title"> Settings &#9881; पर क्लिक करें</div>
+                </div>
+
+            </div>
+
+            <div class="step-image">
+                <div class="phone-frame">
+                    <img src="images/Screenshot_20260125_181245_Google Play Store.jpg" alt="Step 5 Screenshot" />
+                </div>
+            </div>
+        </section>
+
+        <!-- ===============================
+             STEP 6
+        ================================ -->
+        <section class="step">
+            <div class="step-content">
+                <div class="step-header">
+                    <div class="step-number">Step 6</div>
+                    <div class="step-title">नीले बटन पर क्लिक करें</div>
+                </div>
+
+
+            </div>
+
+            <div class="step-image">
+                <div class="phone-frame">
+                    <img src="images/Screenshot_20260125_181254_Google Play Store.jpg" alt="Step 6 Screenshot" />
+                </div>
+            </div>
+        </section>
+
+        <!-- ===============================
+             STEP 7
+        ================================ -->
+        <section class="step">
+            <div class="step-content">
+                <div class="step-header">
+                    <div class="step-number">Step 7</div>
+                    <div class="step-title">Turn ऑफ बटन पर क्लिक करें</div>
+
+                </div>
+                <p class="step-description">क्लिक करने के बाद अपना फिंगरप्रिंट लगायें या पिन डालें उसके बाद बैक करके
+                    दोबारा App पर वापिस आयें</p>
+
+            </div>
+
+            <div class="step-image">
+                <div class="phone-frame">
+                    <img src="images/Screenshot_20260125_181259_Google Play Store.jpg" alt="Step 7 Screenshot" />
+                </div>
+            </div>
+        </section>
+
+        <!-- ===============================
+             STEP 8
+        ================================ -->
+        <section class="step">
+            <div class="step-content">
+                <div class="step-header">
+                    <div class="step-number">Step 8</div>
+                    <div class="step-title"> बैगनी बटन (2) पर क्लिक करें</div>
+                </div>
+
+            </div>
+
+            <div class="step-image">
+                <div class="phone-frame">
+                    <img src="images/Screenshot_20260125_181315.jpg" alt="Step 8 Screenshot" />
+                </div>
+            </div>
+        </section>
+
+        <!-- ===============================
+             STEP 9
+        ================================ -->
+        <section class="step">
+            <div class="step-content">
+                <div class="step-header">
+                    <div class="step-number">Step 9</div>
+                    <div class="step-title">Allow पर क्लिक करें</div>
+                </div>
+
+                <p class="step-description">उसके बाद बैक करके दोबारा App पर वापिस आयें</p>
+            </div>
+
+            <div class="step-image">
+                <div class="phone-frame">
+                    <img src="images/Screenshot_20260125_181320_Settings.jpg" alt="Step 9 Screenshot" />
+                </div>
+            </div>
+        </section>
+
+        <!-- ===============================
+             STEP 10
+        ================================ -->
+        <section class="step">
+            <div class="step-content">
+                <div class="step-header">
+                    <div class="step-number">Step 10</div>
+                    <div class="step-title">तीसरे बटन (Install युपी पंचायत खबर )पर क्लिक करें</div>
+                </div>
+
+            </div>
+
+            <div class="step-image">
+                <div class="phone-frame">
+                    <img src="images/Screenshot_20260125_181326.jpg" alt="Step 10 Screenshot" />
+                </div>
+            </div>
+        </section>
+
+        <!-- ===============================
+             STEP 11
+        ================================ -->
+        <section class="step">
+            <div class="step-content">
+                <div class="step-header">
+                    <div class="step-number">Step 11</div>
+                    <div class="step-title">Install बटन पर क्लिक करें</div>
+                </div>
+
+                <p class="step-description">और App Install होने तक कुछ समय प्रतिक्षा करें</p>
+            </div>
+
+            <div class="step-image">
+                <div class="phone-frame">
+                    <img src="images/Screenshot_20260125_181331_Package installer.jpg" alt="Step 11 Screenshot" />
+                </div>
+            </div>
+        </section>
+
+        <!-- ===============================
+             STEP 12
+        ================================ -->
+        <section class="step">
+            <div class="step-content">
+                <div class="step-header">
+                    <div class="step-number">Step 12</div>
+                    <div class="step-title">Open पर क्लिक करें</div>
+                </div>
+
+                <p class="step-description"> App Open हो जायेगा</p>
+            </div>
+
+            <div class="step-image">
+                <div class="phone-frame">
+                    <img src="images/Screenshot_20260125_181348_Package installer.jpg" alt="Step 12 Screenshot" />
+                </div>
+            </div>
+        </section>
+
+        <!-- ===============================
+             STEP 13
+        ================================ -->
+        <section class="step">
+            <div class="step-content">
+                <div class="step-header">
+                    <div class="step-number">Step 13</div>
+                    <div class="step-title">Setting 1 पर क्लिक करें</div>
+                </div>
+
+
+            </div>
+
+            <div class="step-image">
+                <div class="phone-frame">
+                    <img src="images/Screenshot_20260125_181356_ .jpg" alt="Step 13 Screenshot" />
+                </div>
+            </div>
+        </section>
+
+        <!-- ===============================
+             STEP 14
+        ================================ -->
+        <section class="step">
+            <div class="step-content">
+                <div class="step-header">
+                    <div class="step-number">Step 14</div>
+                    <div class="step-title">Allow पर क्लिक करें</div>
+                </div>
+
+
+            </div>
+
+            <div class="step-image">
+                <div class="phone-frame">
+                    <img src="images/Screenshot_20260125_181402_Permission controller.jpg" alt="Step 14 Screenshot" />
+                </div>
+            </div>
+        </section>
+
+        <!-- ===============================
+             STEP 15
+        ================================ -->
+        <section class="step">
+            <div class="step-content">
+                <div class="step-header">
+                    <div class="step-number">Step 15</div>
+                    <div class="step-title">Allow पर क्लिक करें</div>
+                </div>
+
+
+            </div>
+
+            <div class="step-image">
+                <div class="phone-frame">
+                    <img src="images/Screenshot_20260125_181405_Permission controller.jpg" alt="Step 15 Screenshot" />
+                </div>
+            </div>
+        </section>
+
+        <!-- ===============================
+             STEP 16
+        ================================ -->
+        <section class="step">
+            <div class="step-content">
+                <div class="step-header">
+                    <div class="step-number">Step 16</div>
+                    <div class="step-title">Allow पर क्लिक करें</div>
+                </div>
+
+            </div>
+
+            <div class="step-image">
+                <div class="phone-frame">
+                    <img src="images/Screenshot_20260125_181408_Permission controller.jpg" alt="Step 16 Screenshot" />
+                </div>
+            </div>
+        </section>
+
+        <!-- ===============================
+             STEP 17
+        ================================ -->
+        <section class="step">
+            <div class="step-content">
+                <div class="step-header">
+                    <div class="step-number">Step 17</div>
+                    <div class="step-title">Allow पर क्लिक करें</div>
+                </div>
+
+            </div>
+
+            <div class="step-image">
+                <div class="phone-frame">
+                    <img src="images/Screenshot_20260125_181411_Permission controller.jpg" alt="Step 17 Screenshot" />
+                </div>
+            </div>
+        </section>
+
+        <!-- ===============================
+             STEP 18
+        ================================ -->
+        <section class="step">
+            <div class="step-content">
+                <div class="step-header">
+                    <div class="step-number">Step 18</div>
+                    <div class="step-title">While using the app पर क्लिक करें</div>
+                </div>
+
+            </div>
+
+            <div class="step-image">
+                <div class="phone-frame">
+                    <img src="images/Screenshot_20260125_181415_Permission controller.jpg" alt="Step 18 Screenshot" />
+                </div>
+            </div>
+        </section>
+
+        <!-- ===============================
+             STEP 19
+        ================================ -->
+        <section class="step">
+            <div class="step-content">
+                <div class="step-header">
+                    <div class="step-number">Step 19</div>
+                    <div class="step-title">While using the app पर क्लिक करें</div>
+                </div>
+
+            </div>
+
+            <div class="step-image">
+                <div class="phone-frame">
+                    <img src="images/Screenshot_20260125_181418_Permission controller.jpg" alt="Step 19 Screenshot" />
+                </div>
+            </div>
+        </section>
+
+        <!-- ===============================
+             STEP 20
+        ================================ -->
+        <section class="step">
+            <div class="step-content">
+                <div class="step-header">
+                    <div class="step-number">Step 20</div>
+                    <div class="step-title">While using the app पर क्लिक करें</div>
+                </div>
+
+            </div>
+
+            <div class="step-image">
+                <div class="phone-frame">
+                    <img src="images/Screenshot_20260125_181422_Permission controller.jpg" alt="Step 20 Screenshot" />
+                </div>
+            </div>
+        </section>
+
+        <!-- ===============================
+             STEP 21
+        ================================ -->
+        <section class="step">
+            <div class="step-content">
+                <div class="step-header">
+                    <div class="step-number">Step 21</div>
+                    <div class="step-title">Allow पर क्लिक करें</div>
+                </div>
+
+            </div>
+
+            <div class="step-image">
+                <div class="phone-frame">
+                    <img src="images/Screenshot_20260125_181425_Permission controller.jpg" alt="Step 21 Screenshot" />
+                </div>
+            </div>
+        </section>
+
+        <!-- ===============================
+             STEP 22
+        ================================ -->
+        <section class="step">
+            <div class="step-content">
+                <div class="step-header">
+                    <div class="step-number">Step 22</div>
+                    <div class="step-title">Allow all पर क्लिक करें</div>
+                </div>
+
+            </div>
+
+            <div class="step-image">
+                <div class="phone-frame">
+                    <img src="images/Screenshot_20260125_181429_Permission controller.jpg" alt="Step 22 Screenshot" />
+                </div>
+            </div>
+        </section>
+
+        <!-- ===============================
+             STEP 23
+        ================================ -->
+        <section class="step">
+            <div class="step-content">
+                <div class="step-header">
+                    <div class="step-number">Step 23</div>
+                    <div class="step-title">Allow पर क्लिक करें</div>
+                </div>
+
+            </div>
+
+            <div class="step-image">
+                <div class="phone-frame">
+                    <img src="images/Screenshot_20260125_181432_Permission controller.jpg" alt="Step 23 Screenshot" />
+                </div>
+            </div>
+        </section>
+
+        <!-- ===============================
+             STEP 24
+        ================================ -->
+        <section class="step">
+            <div class="step-content">
+                <div class="step-header">
+                    <div class="step-number">Step 24</div>
+                    <div class="step-title">Setting 2 पर क्लिक करें</div>
+                </div>
+
+            </div>
+
+            <div class="step-image">
+                <div class="phone-frame">
+                    <img src="images/Screenshot_20260125_181443_ .jpg" alt="Step 24 Screenshot" />
+                </div>
+            </div>
+        </section>
+
+        <!-- ===============================
+             STEP 25
+        ================================ -->
+        <section class="step">
+            <div class="step-content">
+                <div class="step-header">
+                    <div class="step-number">Step 25</div>
+                    <div class="step-title">Allow पर क्लिक करें</div>
+                </div>
+
+                <p class="step-description">उसके बाद बैक करके वापिस app पर आयें</p>
+            </div>
+
+            <div class="step-image">
+                <div class="phone-frame">
+                    <img src="images/Screenshot_20260125_181448_Settings.jpg" alt="Step 25 Screenshot" />
+                </div>
+            </div>
+        </section>
+
+        <!-- ===============================
+             STEP 26
+        ================================ -->
+        <section class="step">
+            <div class="step-content">
+                <div class="step-header">
+                    <div class="step-number">Step 26</div>
+                    <div class="step-title">Setting 3 पर क्लिक करें</div>
+                </div>
+
+            </div>
+
+            <div class="step-image">
+                <div class="phone-frame">
+                    <img src="images/Screenshot_20260125_181459_ .jpg" alt="Step 26 Screenshot" />
+                </div>
+            </div>
+        </section>
+
+        <!-- ===============================
+             STEP 27
+        ================================ -->
+        <section class="step">
+            <div class="step-content">
+                <div class="step-header">
+                    <div class="step-number">Step 27</div>
+                    <div class="step-title">पंचायत खबर दूंढ कर क्लिक करें</div>
+                </div>
+
+                <p class="step-description">App लिस्ट को स्क्रॉल करें और पंचायत खबर दूंढ कर क्लिक करें, उसके बाद बैक
+                    करके वापिस app पर आयें</p>
+            </div>
+
+            <div class="step-image">
+                <div class="phone-frame">
+                    <img src="images/Screenshot_20260125_181504_Settings.jpg" alt="Step 27 Screenshot" />
+                </div>
+            </div>
+        </section>
+
+        <!-- ===============================
+             STEP 28
+        ================================ -->
+        <section class="step">
+            <div class="step-content">
+                <div class="step-header">
+                    <div class="step-number">Step 28</div>
+                    <div class="step-title">Setting 4 पर क्लिक करें</div>
+                </div>
+
+
+            </div>
+
+            <div class="step-image">
+                <div class="phone-frame">
+                    <img src="images/Screenshot_20260125_181513_ .jpg" alt="Step 28 Screenshot" />
+                </div>
+            </div>
+        </section>
+
+        <!-- ===============================
+             STEP 29
+        ================================ -->
+        <section class="step">
+            <div class="step-content">
+                <div class="step-header">
+                    <div class="step-number">Step 29</div>
+                    <div class="step-title">पंचायत खबर दूंढ कर क्लिक करें</div>
+                </div>
+
+                <p class="step-description">App लिस्ट को स्क्रॉल करें और पंचायत खबर दूंढ कर क्लिक करें, उसके बाद बैक
+                    करके वापिस app पर आयें</p>
+            </div>
+
+            <div class="step-image">
+                <div class="phone-frame">
+                    <img src="images/Screenshot_20260125_181519_Settings.jpg" alt="Step 29 Screenshot" />
+                </div>
+            </div>
+        </section>
+
+        <!-- ===============================
+             STEP 30
+        ================================ -->
+        <section class="step">
+            <div class="step-content">
+                <div class="step-header">
+                    <div class="step-number">Step 30</div>
+                    <div class="step-title">Setting 5 पर क्लिक करें</div>
+                </div>
+
+
+            </div>
+
+            <div class="step-image">
+                <div class="phone-frame">
+                    <img src="images/Screenshot_20260125_181528_ .jpg" alt="Step 30 Screenshot" />
+                </div>
+            </div>
+        </section>
+
+        <!-- ===============================
+             STEP 31
+        ================================ -->
+        <section class="step">
+            <div class="step-content">
+                <div class="step-header">
+                    <div class="step-number">Step 31</div>
+                    <div class="step-title">Installed apps पर क्लिक करें</div>
+                </div>
+
+            </div>
+
+            <div class="step-image">
+                <div class="phone-frame">
+                    <img src="images/Screenshot_20260125_181537_Settings.jpg" alt="Step 31 Screenshot" />
+                </div>
+            </div>
+        </section>
+
+        <!-- ===============================
+             STEP 32
+        ================================ -->
+        <section class="step">
+            <div class="step-content">
+                <div class="step-header">
+                    <div class="step-number">Step 32</div>
+                    <div class="step-title">पंचायत खबर पर क्लिक करें</div>
+                </div>
+
+            </div>
+
+            <div class="step-image">
+                <div class="phone-frame">
+                    <img src="images/Screenshot_20260125_181541_Settings.jpg" alt="Step 32 Screenshot" />
+                </div>
+            </div>
+        </section>
+
+        <!-- ===============================
+             STEP 33
+        ================================ -->
+        <section class="step">
+            <div class="step-content">
+                <div class="step-header">
+                    <div class="step-number">Step 33</div>
+                    <div class="step-title">Close पर क्लिक करें</div>
+                </div>
+
+            </div>
+
+            <div class="step-image">
+                <div class="phone-frame">
+                    <img src="images/Screenshot_20260125_181544_Permission controller.jpg" alt="Step 33 Screenshot" />
+                </div>
+            </div>
+        </section>
+
+        <!-- ===============================
+             STEP 34
+        ================================ -->
+        <section class="step">
+            <div class="step-content">
+                <div class="step-header">
+                    <div class="step-number">Step 34</div>
+                    <div class="step-title">Setting 6 पर क्लिक करें</div>
+                </div>
+
+            </div>
+
+            <div class="step-image">
+                <div class="phone-frame">
+                    <img src="images/Screenshot_20260125_181600_New Step.jpg" alt="Step 34 Screenshot" />
+                </div>
+            </div>
+        </section>
+
+        <!-- ===============================
+             STEP 35
+        ================================ -->
+        <section class="step">
+            <div class="step-content">
+                <div class="step-header">
+                    <div class="step-number">Step 35</div>
+                    <div class="step-title">ऊपर &vellip; (3 बिंदु) पर क्लिक करें</div>
+                </div>
+
+            </div>
+
+            <div class="step-image">
+                <div class="phone-frame">
+                    <img src="images/Screenshot_20260125_181603_Settings.jpg" alt="Step 35 Screenshot" />
+                </div>
+            </div>
+        </section>
+
+        <!-- ===============================
+             STEP 36
+        ================================ -->
+        <section class="step">
+            <div class="step-content">
+                <div class="step-header">
+                    <div class="step-number">Step 36</div>
+                    <div class="step-title">Allow Restricted पर क्लिक करें</div>
+                </div>
+
+                <p class="step-description">उसके बाद ऊँगली लगायें या पिन लगायें</p>
+            </div>
+
+            <div class="step-image">
+                <div class="phone-frame">
+                    <img src="images/Screenshot_20260125_181608_Settings.jpg" alt="Step 36 Screenshot" />
+                </div>
+            </div>
+        </section>
+
+        <!-- ===============================
+             STEP 37
+        ================================ -->
+        <section class="step">
+            <div class="step-content">
+                <div class="step-header">
+                    <div class="step-number">Step 37</div>
+                    <div class="step-title">Setting 5 पर दोबारा क्लिक करें</div>
+                </div>
+
+            </div>
+
+            <div class="step-image">
+                <div class="phone-frame">
+                    <img src="images/Screenshot_20260125_181614_Replaced Step.jpg" alt="Step 37 Screenshot" />
+                </div>
+            </div>
+        </section>
+
+        <!-- ===============================
+             STEP 38
+        ================================ -->
+        <section class="step">
+            <div class="step-content">
+                <div class="step-header">
+                    <div class="step-number">Step 38</div>
+                    <div class="step-title">Installed apps पर क्लिक करें</div>
+                </div>
+
+            </div>
+
+            <div class="step-image">
+                <div class="phone-frame">
+                    <img src="images/Screenshot_20260125_181620_Extra Step.jpg" alt="Step 38 Screenshot" />
+                </div>
+            </div>
+        </section>
+
+        <!-- ===============================
+             STEP 39
+        ================================ -->
+        <section class="step">
+            <div class="step-content">
+                <div class="step-header">
+                    <div class="step-number">Step 39</div>
+                    <div class="step-title">पंचायत खबर पर क्लिक करें</div>
+                </div>
+            </div>
+
+            <div class="step-image">
+                <div class="phone-frame">
+                    <img src="images/Screenshot_20260125_181628_Settings.jpg" alt="Step 39 Screenshot" />
+                </div>
+            </div>
+        </section>
+
+        <!-- ===============================
+             STEP 40
+        ================================ -->
+        <section class="step">
+            <div class="step-content">
+                <div class="step-header">
+                    <div class="step-number">Step 40</div>
+                    <div class="step-title">Off या use पर क्लिक करें</div>
+                </div>
+
+                <p class="step-description">अलग-अलग मोबाइल में अलग text लिखा होता है,आपके मोबाइल में जो भी text लिखा हो
+                    , पहले बटन पर क्लिक करें</p>
+            </div>
+
+            <div class="step-image">
+                <div class="phone-frame">
+                    <img src="images/Screenshot_20260125_181631_Settings.jpg" alt="Step 40 Screenshot" />
+                </div>
+            </div>
+        </section>
+
+        <!-- ===============================
+             STEP 41
+        ================================ -->
+        <section class="step">
+            <div class="step-content">
+                <div class="step-header">
+                    <div class="step-number">Step 41</div>
+                    <div class="step-title">Allow पर क्लिक करें</div>
+                </div>
+
+                <p class="step-description">और बैक करके app पर वापिस आयें</p>
+            </div>
+
+            <div class="step-image">
+                <div class="phone-frame">
+                    <img src="images/Screenshot_20260125_181635_Settings.jpg" alt="Step 41 Screenshot" />
+                </div>
+            </div>
+        </section>
+
+        <!-- ===============================
+             STEP 42
+        ================================ -->
+        <section class="step">
+            <div class="step-content">
+                <div class="step-header">
+                    <div class="step-number">Step 42</div>
+                    <div class="step-title">Setting 7 पर क्लिक करें</div>
+                </div>
+
+            </div>
+
+            <div class="step-image">
+                <div class="phone-frame">
+                    <img src="images/Screenshot_20260125_181650_ .jpg" alt="Step 42 Screenshot" />
+                </div>
+            </div>
+        </section>
+
+        <!-- ===============================
+             STEP 43
+        ================================ -->
+        <section class="step">
+            <div class="step-content">
+                <div class="step-header">
+                    <div class="step-number">Step 43</div>
+                    <div class="step-title">Activate पर क्लिक करें</div>
+                </div>
+
+            </div>
+
+            <div class="step-image">
+                <div class="phone-frame">
+                    <img src="images/Screenshot_20260125_181654_Settings.jpg" alt="Step 43 Screenshot" />
+                </div>
+            </div>
+        </section>
+
+        <!-- ===============================
+             STEP 44
+        ================================ -->
+        <section class="step">
+            <div class="step-content">
+                <div class="step-header">
+                    <div class="step-number">Step 44</div>
+                    <div class="step-title">Setting 8 पर क्लिक करें</div>
+                </div>
+
+            </div>
+
+            <div class="step-image">
+                <div class="phone-frame">
+                    <img src="images/Screenshot_20260125_181702_ .jpg" alt="Step 44 Screenshot" />
+                </div>
+            </div>
+        </section>
+
+        <!-- ===============================
+             STEP 45
+        ================================ -->
+        <section class="step">
+            <div class="step-content">
+                <div class="step-header">
+                    <div class="step-number">Step 45</div>
+                    <div class="step-title">पंचायत खबर पर क्लिक करें</div>
+                </div>
+
+                <p class="step-description">नीचे स्क्रोल करें app आपको सबसे नीचे दिखेगा</p>
+            </div>
+
+            <div class="step-image">
+                <div class="phone-frame">
+                    <img src="images/Screenshot_20260125_181707_Settings.jpg" alt="Step 45 Screenshot" />
+                </div>
+            </div>
+        </section>
+
+        <section class="step">
+            <div class="step-content">
+                <div class="step-header">
+                    <div class="step-number">Step 46</div>
+                    <div class="step-title">Setting 9 पर क्लिक करें</div>
+                </div>
+
+            </div>
+
+            <div class="step-image">
+                <div class="phone-frame">
+                    <img src="images/Screenshot_20260125_181719_ .jpg" alt="Step 48 Screenshot" />
+                </div>
+            </div>
+        </section>
+
+
+        <section class="step">
+            <div class="step-content">
+                <div class="step-header">
+                    <div class="step-number">Step 47</div>
+                    <div class="step-title">Allow पर क्लिक करें</div>
+                </div>
+
+            </div>
+
+            <div class="step-image">
+                <div class="phone-frame">
+                    <img src="images/Screenshot_20260125_181722_Settings.jpg" alt="Step 49 Screenshot" />
+                </div>
+            </div>
+        </section>
+
+        <!-- ===============================
+             STEP 50
+        ================================ -->
+        <section class="step">
+            <div class="step-content">
+                <div class="step-header">
+                    <div class="step-number">Step 48</div>
+                    <div class="step-title">चेक करें बटन पर क्लिक करें </div>
+                </div>
+
+                <p class="step-description">अगर आपका Setting पूर्ण हो गई तो आगे बढे बटन चालू होजाएगा</p>
+            </div>
+
+            <div class="step-image">
+                <div class="phone-frame">
+                    <img src="images/Screenshot_20260125_181728_ .jpg" alt="Step 50 Screenshot" />
+                </div>
+            </div>
+        </section>
+
+        <!-- ===============================
+             STEP 51
+        ================================ -->
+        <section class="step">
+            <div class="step-content">
+                <div class="step-header">
+                    <div class="step-number">Step 49</div>
+                    <div class="step-title">आगे बढे बटन पर क्लिक करें</div>
+                </div>
+
+                <p class="step-description">बधाई हो , आपका Setting सफलतापूर्वक पूर्ण हुवा </p>
+            </div>
+
+            <div class="step-image">
+                <div class="phone-frame">
+                    <img src="images/Screenshot_20260125_181734_ .jpg" alt="Step 51 Screenshot" />
+                </div>
+            </div>
+        </section>
+
+
+    </div>
+    <script>
+        const openBtn = document.getElementById('openVideo');
+        const closeBtn = document.getElementById('closeVideo');
+        const modal = document.getElementById('videoModal');
+        const player = document.getElementById('videoPlayer');
+
+        openBtn.onclick = () => {
+            modal.style.display = 'flex';
+            player.play();
+            document.body.style.overflow = 'hidden'; // Prevent scroll
+        };
+
+        const closeModal = () => {
+            modal.style.display = 'none';
+            player.pause();
+            player.currentTime = 0; // Reset video
+            document.body.style.overflow = ''; // Restore scroll
+        };
+
+        closeBtn.onclick = closeModal;
+
+        // Close on clicking overlay
+        modal.onclick = (e) => {
+            if (e.target === modal) closeModal();
+        };
+
+        // Close on Esc key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.style.display === 'flex') closeModal();
+        });
+    </script>
+</body>
+
+</html>
